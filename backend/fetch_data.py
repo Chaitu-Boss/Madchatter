@@ -1,5 +1,5 @@
 import requests
-from transformers import pipeline
+# from transformers import pipeline
 from newspaper import Article
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer

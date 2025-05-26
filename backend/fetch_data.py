@@ -1,22 +1,50 @@
 import requests
 from transformers import pipeline
 from newspaper import Article
+from sumy.parsers.plaintext import PlaintextParser
+from sumy.nlp.tokenizers import Tokenizer
+from sumy.summarizers.lsa import LsaSummarizer
+from textblob import TextBlob
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
-summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
-sentiment_analyzer = pipeline("sentiment-analysis",model="distilbert-base-uncased-finetuned-sst-2-english")
+# summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
+# sentiment_analyzer = pipeline("sentiment-analysis",model="distilbert-base-uncased-finetuned-sst-2-english")
+# def summarize_text(text, max_len=130):
+#     if not text:
+#         return "No content to summarize."
+#     result = summarizer(text, max_length=max_len, min_length=30, do_sample=False)
+#     return result[0]['summary_text']
 
-def summarize_text(text, max_len=130):
-    if not text:
-        return "No content to summarize."
-    result = summarizer(text, max_length=max_len, min_length=30, do_sample=False)
-    return result[0]['summary_text']
+# def get_sentiment(text):
+#     if not text:
+#         return "neutral"
+#     result = sentiment_analyzer(text)
+#     label = result[0]['label'].lower()
+#     return label 
+
+def summarize_text(text, sentence_count=3):
+    if not text or len(text.split('.')) < 3:
+        return text[:400] + "..."
+    try:
+        parser = PlaintextParser.from_string(text, Tokenizer("english"))
+        summarizer = LsaSummarizer()
+        summary = summarizer(parser.document, sentence_count)
+        return ' '.join(str(sentence) for sentence in summary)
+    except Exception as e:
+        print("Sumy failed:", e)
+        return text[:400]
 
 def get_sentiment(text):
     if not text:
         return "neutral"
-    result = sentiment_analyzer(text)
-    label = result[0]['label'].lower()
-    return label 
+    polarity = TextBlob(text).sentiment.polarity
+    if polarity > 0.1:
+        return "positive"
+    elif polarity < -0.1:
+        return "negative"
+    return "neutral"
 
 def scrape_article(url):
     headers = {
@@ -52,7 +80,7 @@ def fetch_data(query):
     querystring = {"query":query,"limit":"10","time_published":"7d","lang":"en"}
 
     headers = {
-	    "x-rapidapi-key": "", # Add your RapidAPI key here or use this 7e969dc31cmsh1694e175661a0f1p1672edjsn3cc2103e9b56
+	    "x-rapidapi-key": os.getenv('RAPIDAPI_KEY'), # Add your RapidAPI key here
 	    "x-rapidapi-host": "real-time-news-data.p.rapidapi.com"
     }
 
@@ -65,8 +93,8 @@ def fetch_data(query):
     for item in data:
         try:
             details = scrape_article(item.get('link'))
-            summary = summarize_text(details.get('text')[:1024])
-            sentiment = get_sentiment(details.get('text')[:512])
+            summary = summarize_text(details.get('text'))
+            sentiment = get_sentiment(details.get('title'))
             details['summary'] = summary
             details['sentiment'] = sentiment
             results.append(details)

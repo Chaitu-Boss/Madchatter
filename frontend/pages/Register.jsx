@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Eye, EyeOff } from 'lucide-react';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -10,6 +11,7 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   const handleRegister = (e) => {
     e.preventDefault();

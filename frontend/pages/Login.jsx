@@ -11,7 +11,7 @@ const Login = () => {
   const [showPass, setShowPass] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
-
+  const [isLoading, setIsLoading] = useState(false);
   const handleLogin = (e) => {
     e.preventDefault();
     const newErrors = {};
@@ -28,6 +28,7 @@ const Login = () => {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
+      setIsLoading(true);
       try {
         axios.post('http://localhost:5000/login', { email, password }, { withCredentials: true }).then((response) => {
           if (response.status === 200) {
@@ -42,7 +43,8 @@ const Login = () => {
         console.error("Login error:", error);
         toast.error("Login failed. Please try again.");
         return;
-        
+      } finally {
+        setIsLoading(false);
       }
       console.log("Logging in:", { email, password });
     } else {
@@ -91,7 +93,7 @@ const Login = () => {
             type="submit"
             className="w-1/2 bg-green-500 text-black font-semibold py-3 rounded hover:bg-green-600 mx-auto block transition duration-200 hover:scale-105 cursor-pointer"
           >
-            Login
+          {isLoading ? "Logging in..." : "Login"}
           </button>
           <p className="text-sm text-center text-gray-400 mt-4">
             New to Media Pulse?{" "}

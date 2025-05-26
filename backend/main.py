@@ -13,7 +13,7 @@ CORS(app, supports_credentials=True)
 app.secret_key="HiItsMeGoku"
 
 try:
-    client = MongoClient("") # Replace with this mongoDB connection string or use this mongodb+srv://chaitu:chaitu2005@cluster0.sxaeozd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+    client = MongoClient(os.getenv("MONGO_URI")) # Replace with this mongoDB connection string 
     db = client["test"]
     collection = db["results"]
     users_collection = db["users"]

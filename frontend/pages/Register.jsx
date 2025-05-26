@@ -11,6 +11,7 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
   const [errors, setErrors] = useState({});
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL; 
   const navigate = useNavigate();
 
   const handleRegister = (e) => {
@@ -34,7 +35,7 @@ const Register = () => {
 
     if (Object.keys(newErrors).length === 0) {
       try {
-        axios.post('http://localhost:5000/signup', { username, email, password }, { withCredentials: true })
+        axios.post(`${BACKEND_URL}/signup`, { username, email, password }, { withCredentials: true })
           .then((response) => {
             if (response.status === 201) {
               localStorage.setItem('email', email);

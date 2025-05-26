@@ -6,10 +6,11 @@ import { toast } from 'react-hot-toast';
 const Navbar = () => {
   const navigate = useNavigate();
   const isLoggedIn = localStorage.getItem('email');
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   const handleLogout = () => {
     try {
-      axios.post('http://localhost:5000/logout', {}, { withCredentials: true })
+      axios.post(`${BACKEND_URL}/logout`, {}, { withCredentials: true })
         .then((response) => {
           if (response.status === 200) {
             console.log("Logout successful");

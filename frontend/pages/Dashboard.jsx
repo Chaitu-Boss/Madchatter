@@ -10,10 +10,11 @@ const Dashboard = () => {
     const [articles, setArticles] = useState([]);
     const [history, setHistory] = useState([]);
     const [sentimentFilter, setSentimentFilter] = useState('all');
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 
     useEffect(() => {
         axios
-            .post('http://localhost:5000/history', { email })
+            .post(`${BACKEND_URL}/history`, { email })
             .then(res => setHistory(res.data.history || []))
             .catch(err => console.error("Failed to fetch history", err));
     }, []);
@@ -27,7 +28,7 @@ const Dashboard = () => {
         setArticles([]);
 
         try {
-            const response = await axios.post('http://localhost:5000/results', {
+            const response = await axios.post(``, {
                 query,
                 email,
             });

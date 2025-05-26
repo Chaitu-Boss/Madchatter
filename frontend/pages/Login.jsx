@@ -12,6 +12,7 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const handleLogin = (e) => {
     e.preventDefault();
     const newErrors = {};
@@ -30,7 +31,7 @@ const Login = () => {
     if (Object.keys(newErrors).length === 0) {
       setIsLoading(true);
       try {
-        axios.post('http://localhost:5000/login', { email, password }, { withCredentials: true }).then((response) => {
+        axios.post(`${BACKEND_URL}/login`, { email, password }, { withCredentials: true }).then((response) => {
           if (response.status === 200) {
             localStorage.setItem('email', email);
             toast.success("Logged in successfully!");

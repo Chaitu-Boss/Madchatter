@@ -14,10 +14,11 @@ const cardVariants = {
 
 const Home = () => {
   const [email, setEmail] = useState(null);
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   useEffect(() => {
     const fetchEmail = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/home', { withCredentials: true });
+        const response = await axios.get(`${BACKEND_URL}/email`, { withCredentials: true });
         setEmail(response.data.email);
         console.log('Email:', response.data.email);
         localStorage.setItem('email', response.data.email);

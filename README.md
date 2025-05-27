@@ -21,7 +21,7 @@ It's a productivity tool for media professionals, analysts, and anyone intereste
 
 ## 🌐 Live Replit (Frontend + Backend Combined)
 
-**Replit link**: [https://replit.com/@Chaitu-Boss/Madchatter](#)
+**Replit link**: [https://replit.com/@Chaitu-Boss/Madchatter](https://replit.com/@Chaitu-Boss/Madchatter)
 
 ### 📅 Replit Notes:
 
@@ -151,7 +151,7 @@ transformers
 torch
 ```
 
-### 4. Continue with setup instructions above
+### 4. Continue with setup instructions above from step 2
 
 ---
 

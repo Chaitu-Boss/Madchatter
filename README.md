@@ -21,13 +21,12 @@ It's a productivity tool for media professionals, analysts, and anyone intereste
 
 ## 🌐 Live Replit (Frontend + Backend Combined)
 
-**Replit link**: [https://replit.com/@YourUsername/media-pulse](#)
-*(Replace with your actual Replit link)*
+**Replit link**: [https://replit.com/@Chaitu-Boss/Madchatter](#)
 
 ### 📅 Replit Notes:
 
-* May need to install: `newspaper3k`, `transformers`, `flask-cors`, etc.
-* Add environment variables in `.env` or directly in Replit secrets
+* Add environment variables in Replit secrets
+* SEE IN THE END FOR ENVIRONMENT VARIABLES
 
 ---
 
@@ -61,7 +60,7 @@ It's a productivity tool for media professionals, analysts, and anyone intereste
 ### 1. Clone the Repo
 
 ```bash
-git clone https://github.com/yourusername/media-pulse.git
+git clone https://github.com/Chaitu-Boss/Madchatter.git
 cd Madchatter
 ```
 
@@ -83,10 +82,76 @@ npm install
 npm run dev
 ```
 
-### 🌐 Replit Setup
+---
 
-* Make sure `flask` is running in one tab and `npm run dev` in another (if using two repls)
-* If using one Replit, serve React via Flask static or use `vite build`
+
+## 🗒️ Special Notes
+
+* Couldn't use transformers in replit due to its limitations
+* However if you wish to use them in your local machine follow the instructions below
+
+### 1. In fetch_data.py Uncomment this block of code
+
+```bash
+# from transformers import pipeline
+# summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
+# sentiment_analyzer = pipeline("sentiment-analysis",model="distilbert-base-uncased-finetuned-sst-2-english")
+# def summarize_text(text, max_len=130):
+#     if not text:
+#         return "No content to summarize."
+#     result = summarizer(text, max_length=max_len, min_length=30, do_sample=False)
+#     return result[0]['summary_text']
+
+# def get_sentiment(text):
+#     if not text:
+#         return "neutral"
+#     result = sentiment_analyzer(text)
+#     label = result[0]['label'].lower()
+#     return label 
+```
+
+### 2. In fetch_data.py Comment this block of code
+
+```bash
+def summarize_text(text, sentence_count=3):
+    if not text or len(text.split('.')) < 3:
+        return text[:400] + "..."
+    try:
+        parser = PlaintextParser.from_string(text, Tokenizer("english"))
+        summarizer = LsaSummarizer()
+        summary = summarizer(parser.document, sentence_count)
+        return ' '.join(str(sentence) for sentence in summary)
+    except Exception as e:
+        print("Sumy failed:", e)
+        return text[:400]
+
+def get_sentiment(text):
+    if not text:
+        return "neutral"
+    polarity = TextBlob(text).sentiment.polarity
+    if polarity > 0.1:
+        return "positive"
+    elif polarity < -0.1:
+        return "negative"
+    return "neutral"
+
+```
+
+### 3. Replace the contents of requirements.txt with the following
+
+```bash
+flask
+flask-cors
+flask-bcrypt
+newspaper3k
+lxml-html-clean
+pymongo
+python-dotenv
+transformers
+torch
+```
+
+### 4. Continue with setup instructions above
 
 ---
 
@@ -108,7 +173,6 @@ npm run dev
 ## ⚠️ Limitations / Known Bugs
 
 * Some news domains (e.g., reuters.com) may block scraping
-* Backend errors may occasionally appear on slow connections (especially on Replit)
 * Loading Results might take some time as data gets scraped from various sites
 
 ---
@@ -133,5 +197,19 @@ npm run dev
 ## 🔧 Maintainer
 
 Built with ❤️ by **Chaitu Boss**
+
+---
+
+## ⚙️ Environment Variables
+
+* In backend folder create a .env file with following env variables
+
+```bash
+MONGO_URI="paste-your-mongo-connection-string" or use this
+"mongodb+srv://chaitu:chaitu2005@cluster0.sxaeozd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+RAPIDAPI_KEY = "paste-your-rapid-api-key" or use this "7e969dc31cmsh1694e175661a0f1p1672edjsn3cc2103e9b56"
+```
+
+* For Replit add these in the Secrets Section as Key and Value Pair
 
 ---

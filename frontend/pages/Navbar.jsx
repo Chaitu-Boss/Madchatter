@@ -6,7 +6,7 @@ import { toast } from 'react-hot-toast';
 const Navbar = () => {
   const navigate = useNavigate();
   const isLoggedIn = localStorage.getItem('email');
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
 
   const handleLogout = () => {
     try {

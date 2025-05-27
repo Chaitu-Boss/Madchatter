@@ -7,14 +7,15 @@ import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const [username, setUsername] = useState('');
-  const [email, setEmail]     = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
   const [errors, setErrors] = useState({});
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL; 
+  const [isLoading, setIsLoading] = useState(false);
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
   const navigate = useNavigate();
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     const newErrors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -34,24 +35,23 @@ const Register = () => {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
+      setIsLoading(true);
       try {
-        axios.post(`${BACKEND_URL}/signup`, { username, email, password }, { withCredentials: true })
-          .then((response) => {
-            if (response.status === 201) {
-              localStorage.setItem('email', email);
-              toast.success("Registered successfully!");
-              navigate('/login');
-            } else {
-              toast.error(response.data.message || "Registration failed. Please try again.");
-            }
-          })
+        const response = await axios.post(`${BACKEND_URL}/signup`, { username, email, password }, { withCredentials: true });
 
+        if (response.status === 201) {
+          localStorage.setItem('email', email);
+          toast.success("Registered successfully!");
+          navigate('/login');
+        } else {
+          toast.error(response.data.message || "Registration failed. Please try again.");
+        }
       } catch (error) {
         console.error("Registration error:", error);
         toast.error("Registration failed. Please try again.");
-        return; 
+      } finally {
+        setIsLoading(false);
       }
-      console.log("Registering:", { username, email, password });
     } else {
       toast.error("Please fix the highlighted errors.");
     }
@@ -73,9 +73,8 @@ const Register = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Username"
-              className={`w-full bg-gray-800 p-3 rounded focus:outline-none focus:ring-2 ${
-                errors.username ? "ring-red-400" : "focus:ring-blue-400"
-              }`}
+              className={`w-full bg-gray-800 p-3 rounded focus:outline-none focus:ring-2 ${errors.username ? "ring-red-400" : "focus:ring-blue-400"
+                }`}
             />
             {errors.username && <p className="text-red-400 text-sm mt-1">{errors.username}</p>}
           </div>
@@ -86,9 +85,8 @@ const Register = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email"
-              className={`w-full bg-gray-800 p-3 rounded focus:outline-none focus:ring-2 ${
-                errors.email ? "ring-red-400" : "focus:ring-blue-400"
-              }`}
+              className={`w-full bg-gray-800 p-3 rounded focus:outline-none focus:ring-2 ${errors.email ? "ring-red-400" : "focus:ring-blue-400"
+                }`}
             />
             {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
           </div>
@@ -99,9 +97,8 @@ const Register = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
-              className={`w-full bg-gray-800 p-3 rounded focus:outline-none pr-10 focus:ring-2 ${
-                errors.password ? "ring-red-400" : "focus:ring-blue-400"
-              }`}
+              className={`w-full bg-gray-800 p-3 rounded focus:outline-none pr-10 focus:ring-2 ${errors.password ? "ring-red-400" : "focus:ring-blue-400"
+                }`}
             />
             <span onClick={() => setShowPass(!showPass)} className="absolute top-3 right-3 cursor-pointer text-gray-400">
               {showPass ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -113,7 +110,7 @@ const Register = () => {
             type="submit"
             className="w-1/2 bg-blue-500 text-black font-semibold py-3 rounded hover:bg-blue-600 mx-auto block transition duration-200 hover:scale-105 cursor-pointer"
           >
-            Register
+            {isLoading ? "Registering..." : "Register"}
           </button>
         </form>
       </motion.div>

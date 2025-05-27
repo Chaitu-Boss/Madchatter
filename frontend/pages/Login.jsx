@@ -12,46 +12,44 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-  const handleLogin = (e) => {
-    e.preventDefault();
-    const newErrors = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+  const handleLogin = async (e) => {
+  e.preventDefault();
+  const newErrors = {};
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!emailRegex.test(email)) {
-      newErrors.email = "Enter a valid email.";
-    }
+  if (!emailRegex.test(email)) {
+    newErrors.email = "Enter a valid email.";
+  }
 
-    if (password.length < 7) {
-      newErrors.password = "Password must be at least 7 characters.";
-    }
+  if (password.length < 7) {
+    newErrors.password = "Password must be at least 7 characters.";
+  }
 
-    setErrors(newErrors);
+  setErrors(newErrors);
 
-    if (Object.keys(newErrors).length === 0) {
-      setIsLoading(true);
-      try {
-        axios.post(`${BACKEND_URL}/login`, { email, password }, { withCredentials: true }).then((response) => {
-          if (response.status === 200) {
-            localStorage.setItem('email', email);
-            toast.success("Logged in successfully!");
-            navigate('/dashboard');
-          } else {
-            toast.error(response.data.message || "Login failed. Please try again.");
-          }
-        })
-      } catch (error) {
-        console.error("Login error:", error);
-        toast.error("Login failed. Please try again.");
-        return;
-      } finally {
-        setIsLoading(false);
+  if (Object.keys(newErrors).length === 0) {
+    setIsLoading(true);
+    try {
+      const response = await axios.post(`${BACKEND_URL}/login`, { email, password }, { withCredentials: true });
+
+      if (response.status === 200) {
+        localStorage.setItem('email', email);
+        toast.success("Logged in successfully!");
+        navigate('/dashboard');
+      } else {
+        toast.error(response.data.message || "Login failed. Please try again.");
       }
-      console.log("Logging in:", { email, password });
-    } else {
-      toast.error("Please fix the highlighted errors.");
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error("Login failed. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
-  };
+  } else {
+    toast.error("Please fix the highlighted errors.");
+  }
+};
 
   return (
     <div className="min-h-screen bg-black text-white flex items-center">

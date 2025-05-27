@@ -10,7 +10,7 @@ const Dashboard = () => {
     const [articles, setArticles] = useState([]);
     const [history, setHistory] = useState([]);
     const [sentimentFilter, setSentimentFilter] = useState('all');
-    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
 
     useEffect(() => {
         axios

@@ -1,5 +1,4 @@
 import requests
-# from transformers import pipeline
 from newspaper import Article
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
@@ -8,7 +7,16 @@ from textblob import TextBlob
 import os
 from dotenv import load_dotenv
 load_dotenv()
+import nltk
+nltk.download('punkt_tab')
+nltk.download('punkt')
 
+
+# Commented out code is for transformers library, which can be used for summarization and sentiment analysis due to replit limitations.
+
+# Uncomment the following lines if you want to use transformers for summarization and sentiment analysis
+
+# from transformers import pipeline
 # summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
 # sentiment_analyzer = pipeline("sentiment-analysis",model="distilbert-base-uncased-finetuned-sst-2-english")
 # def summarize_text(text, max_len=130):
@@ -24,6 +32,8 @@ load_dotenv()
 #     label = result[0]['label'].lower()
 #     return label 
 
+
+# Comment out the following functions if you want to use transformers for summarization and sentiment analysis
 def summarize_text(text, sentence_count=3):
     if not text or len(text.split('.')) < 3:
         return text[:400] + "..."

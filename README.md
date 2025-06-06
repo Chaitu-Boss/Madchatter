@@ -199,17 +199,3 @@ torch
 Built with ❤️ by **Chaitu Boss**
 
 ---
-
-## ⚙️ Environment Variables
-
-* In backend folder create a .env file with following env variables
-
-```bash
-MONGO_URI="paste-your-mongo-connection-string" or use this
-"mongodb+srv://chaitu:chaitu2005@cluster0.sxaeozd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-RAPIDAPI_KEY = "paste-your-rapid-api-key" or use this "7e969dc31cmsh1694e175661a0f1p1672edjsn3cc2103e9b56"
-```
-
-* For Replit add these in the Secrets Section as Key and Value Pair
-
----
